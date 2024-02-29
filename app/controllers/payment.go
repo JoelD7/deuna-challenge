@@ -23,7 +23,7 @@ func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 
-	jsonData, err := json.Marshal(payment)
+	jsonData, err := json.MarshalIndent(payment, "", "    ")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

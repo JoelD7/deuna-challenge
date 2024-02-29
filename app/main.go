@@ -9,6 +9,8 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler)
+
+	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).
+		Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
