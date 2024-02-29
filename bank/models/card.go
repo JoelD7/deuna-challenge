@@ -1,4 +1,4 @@
-package bank
+package models
 
 type Card struct {
 	CardNumber int64   `json:"cardNumber" gorm:"card_number"`
@@ -9,4 +9,5 @@ type Card struct {
 	Vendor     string  `json:"vendor" gorm:"vendor"`
 	CCV        int     `json:"ccv" gorm:"ccv"`
 	Balance    float64 `json:"balance" gorm:"balance"`
+	Account    Account `json:"account" gorm:"foreignKey:AccountID"`
 }

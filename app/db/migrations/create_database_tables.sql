@@ -59,9 +59,9 @@ INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv
 INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2', '05/2028', 'Mastercard', 788, datetime(), datetime());
 INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv`, `created_date`, `updated_date` ) VALUES (5004896175620369, '3', '02/2030', 'Visa', 456, datetime(), datetime());
 
-INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('1', 'Michael', 'Landon', 'michale@landon.com', '5201469800', '700 Fifth St', datetime(), datetime());
-INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('2', 'Barbara', 'Walters', 'barbara@walters.com', '5201469800', '852 Seventh St', datetime(), datetime());
-INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('3', 'Michael', 'Jordan', 'michael@jordan.com', '8520147963', '789 Ninth St', datetime(), datetime());
+INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('4', 'Michael', 'Landon', 'michale@landon.com', '5201469800', '700 Fifth St', datetime(), datetime());
+INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('5', 'Barbara', 'Walters', 'barbara@walters.com', '5201469800', '852 Seventh St', datetime(), datetime());
+INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('6', 'Michael', 'Jordan', 'michael@jordan.com', '8520147963', '789 Ninth St', datetime(), datetime());
 
 INSERT INTO `payments` ( `id`, `merchant_id`, `customer_id`, `card_number`, `transaction_id`, `amount`, `status`, `failure_reason`, `created_date`, `updated_date` ) VALUES ('1', '1', '1', 1654720058763025, '1', 100.00, 'success', '', datetime(), datetime());
 INSERT INTO `payments` ( `id`, `merchant_id`, `customer_id`, `card_number`, `transaction_id`, `amount`, `status`, `failure_reason`, `created_date`, `updated_date` ) VALUES ('2', '2', '2', 7048506547895036, '2', 200.00, 'success', '', datetime(), datetime());

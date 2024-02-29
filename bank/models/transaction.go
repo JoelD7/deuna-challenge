@@ -1,4 +1,4 @@
-package bank
+package models
 
 type Transaction struct {
 	ID                 string  `json:"id" gorm:"id"`
@@ -7,4 +7,6 @@ type Transaction struct {
 	Amount             float64 `json:"amount" gorm:"amount"`
 	Type               string  `json:"type" gorm:"type"`
 	Date               string  `json:"date" gorm:"date"`
+	Account            Account `json:"account" gorm:"foreignKey:AccountID"`
+	RecipientAccount   Account `json:"recipientAccount" gorm:"foreignKey:RecipientAccountID"`
 }

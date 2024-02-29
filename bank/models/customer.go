@@ -1,4 +1,4 @@
-package bank
+package models
 
 type Customer struct {
 	ID          string `json:"id" gorm:"id"`
