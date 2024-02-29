@@ -1,0 +1,33 @@
+package controllers
+
+import (
+	"encoding/json"
+	"github.com/JoelD7/deuna-challenge/app/db/repository"
+	"github.com/JoelD7/deuna-challenge/app/usecases"
+	"github.com/gorilla/mux"
+	"net/http"
+)
+
+func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	paymentID := vars["paymentID"]
+
+	w.Header().Set("Content-Type", "application/json")
+
+	getPayment := usecases.NewPaymentGetter(repository.NewSQLiteClient())
+	payment, err := getPayment(r.Context(), paymentID)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	jsonData, err := json.Marshal(payment)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(jsonData)
+}
