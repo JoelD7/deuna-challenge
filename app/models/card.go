@@ -1,7 +1,7 @@
 package models
 
 type Card struct {
-	CardNumber int64  `json:"cardNumber" gorm:"card_number"`
+	CardNumber int64  `json:"cardNumber" gorm:"card_number;primaryKey"`
 	CustomerID string `json:"customerID" gorm:"customer_id"`
 	Expiration string `json:"expiration" gorm:"expiration"`
 	Type       string `json:"type" gorm:"type"`

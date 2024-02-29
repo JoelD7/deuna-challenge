@@ -14,10 +14,6 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	// Migrate the schema
-	db.AutoMigrate(models.Payment{})
-
-	// Read
 	var payment models.Payment
 	db.First(&payment, "1") // find payment with integer primary key
 
