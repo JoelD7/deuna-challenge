@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-
 	r := mux.NewRouter()
 	r.Use(headerMiddleware)
 

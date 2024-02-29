@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/JoelD7/deuna-challenge/app/db/repository"
+	"github.com/JoelD7/deuna-challenge/app/models"
 	"github.com/JoelD7/deuna-challenge/app/usecases"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -15,7 +16,7 @@ func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	getPayment := usecases.NewPaymentGetter(repository.NewSQLiteClient())
 	payment, err := getPayment(r.Context(), paymentID)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		models.WriteErrorResponse(w, err)
 		return
 	}
 
@@ -23,9 +24,13 @@ func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 
 	jsonData, err := json.MarshalIndent(payment, "", "    ")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		models.WriteErrorResponse(w, err)
 		return
 	}
 
-	w.Write(jsonData)
+	_, err = w.Write(jsonData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }

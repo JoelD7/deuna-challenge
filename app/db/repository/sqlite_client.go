@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"github.com/JoelD7/deuna-challenge/app/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -31,6 +32,10 @@ func (cli *SQLiteClient) GetPayment(ctx context.Context, paymentID string) (*mod
 	var payment models.Payment
 
 	err := db.Model(&models.Payment{}).Preload(clause.Associations).First(&payment, paymentID).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrPaymentNotFound
+	}
 
 	if err != nil {
 		return nil, err
