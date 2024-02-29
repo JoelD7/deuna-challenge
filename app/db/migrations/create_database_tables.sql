@@ -15,6 +15,7 @@ CREATE TABLE `cards` (
   `customer_id` text NOT NULL,
   `expiration` text NOT NULL,
   `vendor` text NOT NULL,
+  `type` text NOT NULL,
   `ccv` integer NOT NULL,
   `created_date` datetime,
   `updated_date` datetime,
@@ -55,9 +56,9 @@ INSERT INTO `customers` ( `id`, `first_name`, `last_name`, `email`, `phone_numbe
 INSERT INTO `customers` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('2', 'Jane', 'Doe', 'jane@doe.com', '8504569870', '852 Main St', datetime(), datetime());
 INSERT INTO `customers` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('3', 'John', 'Smith', 'john@smit.com', '1234567890', '789 Main St', datetime(), datetime());
 
-INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv`, `created_date`, `updated_date` ) VALUES (1654720058763025, '1', '12/2028', 'Visa', 123, datetime(), datetime());
-INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2', '05/2028', 'Mastercard', 788, datetime(), datetime());
-INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`, `ccv`, `created_date`, `updated_date` ) VALUES (5004896175620369, '3', '02/2030', 'Visa', 456, datetime(), datetime());
+INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`,`type`, `ccv`, `created_date`, `updated_date` ) VALUES (1654720058763025, '1', '12/2028', 'Visa', 'credit', 123, datetime(), datetime());
+INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`,`type`, `ccv`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2', '05/2028', 'Mastercard', 'debit', 788, datetime(), datetime());
+INSERT INTO `cards` ( `card_number`, `customer_id`, `expiration`, `vendor`,`type`, `ccv`, `created_date`, `updated_date` ) VALUES (5004896175620369, '3', '02/2030', 'Visa', 'debit', 456, datetime(), datetime());
 
 INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('4', 'Michael', 'Landon', 'michale@landon.com', '5201469800', '700 Fifth St', datetime(), datetime());
 INSERT INTO `merchants` ( `id`, `first_name`, `last_name`, `email`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('5', 'Barbara', 'Walters', 'barbara@walters.com', '5201469800', '852 Seventh St', datetime(), datetime());

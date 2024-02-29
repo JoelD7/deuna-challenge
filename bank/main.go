@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/JoelD7/deuna-challenge/bank/controllers"
 	"github.com/gorilla/mux"
 	"log"
@@ -9,7 +10,7 @@ import (
 )
 
 var (
-	bankURL = os.Getenv("BANK_URL")
+	bankHost = os.Getenv("BANK_HOST")
 )
 
 func main() {
@@ -19,7 +20,8 @@ func main() {
 	r.HandleFunc("/card", controllers.ValidateCardHandler).
 		Methods(http.MethodPost)
 
-	log.Fatal(http.ListenAndServe(bankURL, r))
+	fmt.Println("Bank server running on", bankHost)
+	log.Fatal(http.ListenAndServe(bankHost, r))
 }
 
 func headerMiddleware(next http.Handler) http.Handler {

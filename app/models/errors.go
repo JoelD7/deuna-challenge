@@ -55,9 +55,11 @@ func WriteErrorResponse(w http.ResponseWriter, err error) {
 	status := http.StatusInternalServerError
 	message := "Internal server error"
 
-	if res, ok := statusByError[err]; ok {
-		status = res.Status
-		message = res.Message
+	for mappedErr, responseErr := range statusByError {
+		if errors.Is(err, mappedErr) {
+			status = responseErr.Status
+			message = err.Error()
+		}
 	}
 
 	fmt.Println("Error: ", err.Error())

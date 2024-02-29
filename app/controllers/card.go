@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	bankURL = os.Getenv("BANK_URL")
+	bankHost = os.Getenv("BANK_HOST")
 )
 
 func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,7 +38,7 @@ func CreateCardHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	writeJSONData(w, newCard)
 }
 
@@ -55,9 +55,11 @@ func validateCreateCardRequest(r *http.Request) (*models.Card, error) {
 		return nil, err
 	}
 
-	resp, err := http.Post(bankURL, "application/json", bytes.NewBuffer(requestBody))
+	url := "http://" + bankHost + "/card"
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error sending request to bank: %w", err)
 	}
 
 	defer resp.Body.Close()
@@ -67,9 +69,13 @@ func validateCreateCardRequest(r *http.Request) (*models.Card, error) {
 		return nil, fmt.Errorf("error reading response body: %w", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode == http.StatusOK {
+		return &card, nil
+	}
+
+	if resp.StatusCode >= 400 && resp.StatusCode < 500 {
 		return nil, fmt.Errorf("%w: %s", models.ErrInvalidCard, string(responseBody))
 	}
 
-	return &card, nil
+	return nil, fmt.Errorf("error validating card: %s", string(responseBody))
 }

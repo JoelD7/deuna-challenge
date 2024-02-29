@@ -21,7 +21,7 @@ var (
 	ErrInvalidCCV                  = errors.New("invalid CCV. Must be a 3 digit number")
 	ErrMissingCardType             = errors.New("missing card type")
 	ErrInvalidCardType             = errors.New("invalid card type. Must be either 'debit' or 'credit'")
-	ErrCardNotFound                = errors.New("card not found")
+	ErrCardNotFound                = errors.New("card not registered")
 
 	statusByError = map[error]ErrResponse{
 		ErrMissingCardNumber:           {ErrMissingCardNumber.Error(), http.StatusBadRequest},

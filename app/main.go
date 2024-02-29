@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/JoelD7/deuna-challenge/app/controllers"
 	"github.com/gorilla/mux"
 	"log"
@@ -9,7 +10,7 @@ import (
 )
 
 var (
-	appURL = os.Getenv("APP_URL")
+	appHost = os.Getenv("APP_HOST")
 )
 
 func main() {
@@ -23,7 +24,8 @@ func main() {
 	r.HandleFunc("/card", controllers.CreateCardHandler).
 		Methods(http.MethodPost)
 
-	log.Fatal(http.ListenAndServe(appURL, r))
+	fmt.Println("App server running on", appHost)
+	log.Fatal(http.ListenAndServe(appHost, r))
 }
 
 func headerMiddleware(next http.Handler) http.Handler {
