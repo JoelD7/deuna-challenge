@@ -5,9 +5,9 @@ import (
 )
 
 type Account struct {
-	ID         string     `json:"id"`
-	CustomerID string     `json:"customerID"`
-	Type       string     `json:"type"`
-	Balance    float64    `json:"balance"`
-	OpenDate   *time.Time `json:"openDate"`
+	ID         string     `json:"id" gorm:"id"`
+	CustomerID string     `json:"customerID" gorm:"customer_id"`
+	Type       string     `json:"type" gorm:"type"`
+	Balance    float64    `json:"balance" gorm:"balance"`
+	OpenDate   *time.Time `json:"openDate" gorm:"open_date"`
 }

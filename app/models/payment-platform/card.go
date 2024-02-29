@@ -1,10 +1,10 @@
 package payment_platform
 
 type Card struct {
-	CardNumber int64  `json:"cardNumber"`
-	CustomerID string `json:"customerID"`
-	Expiration string `json:"expiration"`
-	Type       string `json:"type"`
-	Vendor     string `json:"vendor"`
-	CCV        int    `json:"ccv"`
+	CardNumber int64  `json:"cardNumber" gorm:"card_number"`
+	CustomerID string `json:"customerID" gorm:"customer_id"`
+	Expiration string `json:"expiration" gorm:"expiration"`
+	Type       string `json:"type" gorm:"type"`
+	Vendor     string `json:"vendor" gorm:"vendor"`
+	CCV        int    `json:"ccv" gorm:"ccv"`
 }

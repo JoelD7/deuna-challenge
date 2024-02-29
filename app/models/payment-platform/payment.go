@@ -5,7 +5,7 @@ import (
 )
 
 type Payment struct {
-	ID            string     `json:"id" gorm:"id" gorm:"ID"`
+	ID            string     `json:"id" gorm:"id"`
 	MerchantID    string     `json:"merchantID" gorm:"merchant_id"`
 	CustomerID    string     `json:"customerID" gorm:"customer_id"`
 	CardNumber    int        `json:"cardNumber" gorm:"card_number"`

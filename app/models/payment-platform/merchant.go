@@ -1,10 +1,10 @@
 package payment_platform
 
 type Merchant struct {
-	ID          string `json:"id"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phoneNumber"`
-	Address     string `json:"address"`
+	ID          string `json:"id" gorm:"id"`
+	FirstName   string `json:"firstName" gorm:"first_name"`
+	LastName    string `json:"lastName" gorm:"last_name"`
+	Email       string `json:"email" gorm:"email"`
+	PhoneNumber string `json:"phoneNumber" gorm:"phone_number"`
+	Address     string `json:"address" gorm:"address"`
 }
