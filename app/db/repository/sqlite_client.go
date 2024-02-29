@@ -31,7 +31,7 @@ func NewSQLiteClient() *SQLiteClient {
 func (cli *SQLiteClient) GetPayment(ctx context.Context, paymentID string) (*models.Payment, error) {
 	var payment models.Payment
 
-	err := db.Model(&models.Payment{}).Preload(clause.Associations).First(&payment, paymentID).Error
+	err := db.Model(&models.Payment{}).Preload(clause.Associations).First(&payment, "id = ?", paymentID).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, models.ErrPaymentNotFound
@@ -42,4 +42,18 @@ func (cli *SQLiteClient) GetPayment(ctx context.Context, paymentID string) (*mod
 	}
 
 	return &payment, nil
+}
+
+func (cli *SQLiteClient) CreatePayment(ctx context.Context, payment models.Payment) (string, error) {
+	result := db.Create(&payment)
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	if payment.ID == "" {
+		return "", errors.New("payment ID is nil")
+	}
+
+	return payment.ID, nil
 }

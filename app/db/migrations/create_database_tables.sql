@@ -1,5 +1,5 @@
 CREATE TABLE `customers` (
-  `id` text NOT NULL,
+  `id` text,
   `first_name` text NOT NULL,
   `last_name` text NOT NULL,
   `email` text NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE `customers` (
 );
 
 CREATE TABLE `cards` (
-  `card_number` integer NOT NULL,
+  `card_number` integer,
   `customer_id` text NOT NULL,
   `expiration` text NOT NULL,
   `vendor` text NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `cards` (
 );
 
 CREATE TABLE `merchants` (
-  `id` text NOT NULL,
+  `id` text,
   `first_name` text NOT NULL,
   `last_name` text NOT NULL,
   `email` text NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `merchants` (
 );
 
 CREATE TABLE `payments` (
-  `id` text NOT NULL,
+  `id` text,
   `merchant_id` text NOT NULL,
   `customer_id` text NOT NULL,
   `card_number` integer NOT NULL,

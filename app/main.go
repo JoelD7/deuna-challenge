@@ -13,6 +13,9 @@ func main() {
 
 	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).
 		Methods(http.MethodGet)
+	r.HandleFunc("/payments", controllers.CreatePaymentHandler).
+		Methods(http.MethodPost)
+
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }
 
