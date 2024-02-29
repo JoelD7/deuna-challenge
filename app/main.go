@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	models "github.com/JoelD7/deuna-challenge/app/models/payment-platform"
+	"github.com/JoelD7/deuna-challenge/app/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

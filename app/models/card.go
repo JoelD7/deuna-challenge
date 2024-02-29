@@ -1,4 +1,4 @@
-package payment_platform
+package models
 
 type Card struct {
 	CardNumber int64  `json:"cardNumber" gorm:"card_number"`

@@ -1,6 +1,6 @@
-package payment_platform
+package models
 
-type Merchant struct {
+type Customer struct {
 	ID          string `json:"id" gorm:"id"`
 	FirstName   string `json:"firstName" gorm:"first_name"`
 	LastName    string `json:"lastName" gorm:"last_name"`

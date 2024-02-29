@@ -1,4 +1,4 @@
-package payment_platform
+package models
 
 import (
 	"time"
