@@ -1,1 +1,0 @@
-# deuna-challenge
