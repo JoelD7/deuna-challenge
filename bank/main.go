@@ -1,29 +1,30 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/JoelD7/deuna-challenge/bank/models"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
+	"github.com/JoelD7/deuna-challenge/bank/controllers"
+	"github.com/gorilla/mux"
+	"log"
+	"net/http"
+	"os"
+)
+
+var (
+	bankURL = os.Getenv("BANK_URL")
 )
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("deuna-bank-db.sqlt"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	r := mux.NewRouter()
+	r.Use(headerMiddleware)
 
-	var transaction models.Transaction
+	r.HandleFunc("/card", controllers.ValidateCardHandler).
+		Methods(http.MethodPost)
 
-	err = db.Model(&models.Transaction{}).Preload(clause.Associations).First(&transaction, "1").Error
+	log.Fatal(http.ListenAndServe(bankURL, r))
+}
 
-	if err != nil {
-		fmt.Println("Error: ", err)
-		return
-	}
-
-	data, err := json.Marshal(transaction)
-	fmt.Println("Result: ", string(data))
+func headerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
 }
