@@ -12,8 +12,6 @@ func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	paymentID := vars["paymentID"]
 
-	w.Header().Set("Content-Type", "application/json")
-
 	getPayment := usecases.NewPaymentGetter(repository.NewSQLiteClient())
 	payment, err := getPayment(r.Context(), paymentID)
 	if err != nil {

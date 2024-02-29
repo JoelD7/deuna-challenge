@@ -8,9 +8,18 @@ import (
 )
 
 func main() {
+
 	r := mux.NewRouter()
+	r.Use(headerMiddleware)
 
 	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).
 		Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
+}
+
+func headerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
 }
