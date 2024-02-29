@@ -11,15 +11,15 @@ CREATE TABLE `customers` (
 );
 
 CREATE TABLE `cards` (
-  `card_number` int NOT NULL,
+  `card_number` integer NOT NULL,
   `customer_id` text NOT NULL,
   `expiration` text NOT NULL,
   `vendor` text NOT NULL,
-  `ccv` int NOT NULL,
+  `ccv` integer NOT NULL,
   `created_date` datetime,
   `updated_date` datetime,
   PRIMARY KEY (`card_number`),
-  FOREIGN KEY(card_number) REFERENCES customers(id)
+  FOREIGN KEY(customer_id) REFERENCES customers(id)
 );
 
 CREATE TABLE `merchants` (
@@ -38,7 +38,7 @@ CREATE TABLE `payments` (
   `id` text NOT NULL,
   `merchant_id` text NOT NULL,
   `customer_id` text NOT NULL,
-  `card_number` int NOT NULL,
+  `card_number` integer NOT NULL,
   `transaction_id` text,
   `amount` real NOT NULL,
   `status` text,
