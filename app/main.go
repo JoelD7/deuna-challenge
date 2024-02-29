@@ -15,6 +15,8 @@ func main() {
 		Methods(http.MethodGet)
 	r.HandleFunc("/payments", controllers.CreatePaymentHandler).
 		Methods(http.MethodPost)
+	r.HandleFunc("/card", controllers.CreateCardHandler).
+		Methods(http.MethodPost)
 
 	log.Fatal(http.ListenAndServe("localhost:8080", r))
 }

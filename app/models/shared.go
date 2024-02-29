@@ -17,3 +17,7 @@ func generateUUID() string {
 
 	return string(b)
 }
+
+func getStringPointer(s string) *string {
+	return &s
+}

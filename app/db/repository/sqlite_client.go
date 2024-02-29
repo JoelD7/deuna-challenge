@@ -57,3 +57,33 @@ func (cli *SQLiteClient) CreatePayment(ctx context.Context, payment models.Payme
 
 	return payment.ID, nil
 }
+
+func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models.Card, error) {
+	var card models.Card
+
+	err := db.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ?", cardNumber).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrCardNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &card, nil
+}
+
+func (cli *SQLiteClient) CreateCard(ctx context.Context, card models.Card) (int64, error) {
+	result := db.Create(&card)
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	if card.CardNumber == 0 {
+		return 0, errors.New("card ID is nil")
+	}
+
+	return card.CardNumber, nil
+}

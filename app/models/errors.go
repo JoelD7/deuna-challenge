@@ -19,6 +19,16 @@ var (
 	ErrMissingMerchantID            = errors.New("missing merchant ID")
 	ErrEqualCustomerIDAndMerchantID = errors.New("customer ID and merchant ID cannot be equal")
 	ErrMissingCardNumber            = errors.New("missing card number")
+	ErrInvalidCardNumber            = errors.New("invalid card number")
+	ErrInvalidCardExpirationDate    = errors.New("invalid card expiration date")
+	ErrInvalidCardExpirationFormat  = errors.New("invalid card expiration format. Make sure it's in the format MM/YY")
+	ErrMissingCardExpiration        = errors.New("missing card expiry date")
+	ErrMissingCCV                   = errors.New("missing CCV")
+	ErrInvalidCCV                   = errors.New("invalid CCV. Must be a 3 digit number")
+	ErrMissingCardType              = errors.New("missing card type")
+	ErrInvalidCardType              = errors.New("invalid card type. Must be either 'debit' or 'credit'")
+	ErrCardNotFound                 = errors.New("card not found")
+	ErrInvalidCard                  = errors.New("invalid card")
 
 	statusByError = map[error]ErrResponse{
 		ErrPaymentNotFound:              {ErrPaymentNotFound.Error(), http.StatusNotFound},
@@ -28,6 +38,16 @@ var (
 		ErrMissingMerchantID:            {ErrMissingMerchantID.Error(), http.StatusBadRequest},
 		ErrEqualCustomerIDAndMerchantID: {ErrEqualCustomerIDAndMerchantID.Error(), http.StatusBadRequest},
 		ErrMissingCardNumber:            {ErrMissingCardNumber.Error(), http.StatusBadRequest},
+		ErrInvalidCardNumber:            {ErrInvalidCardNumber.Error(), http.StatusBadRequest},
+		ErrInvalidCardExpirationDate:    {ErrInvalidCardExpirationDate.Error(), http.StatusBadRequest},
+		ErrInvalidCardExpirationFormat:  {ErrInvalidCardExpirationFormat.Error(), http.StatusBadRequest},
+		ErrMissingCardExpiration:        {ErrMissingCardExpiration.Error(), http.StatusBadRequest},
+		ErrMissingCCV:                   {ErrMissingCCV.Error(), http.StatusBadRequest},
+		ErrInvalidCCV:                   {ErrInvalidCCV.Error(), http.StatusBadRequest},
+		ErrMissingCardType:              {ErrMissingCardType.Error(), http.StatusBadRequest},
+		ErrInvalidCardType:              {ErrInvalidCardType.Error(), http.StatusBadRequest},
+		ErrCardNotFound:                 {ErrCardNotFound.Error(), http.StatusNotFound},
+		ErrInvalidCard:                  {ErrInvalidCard.Error(), http.StatusBadRequest},
 	}
 )
 

@@ -29,10 +29,6 @@ type Payment struct {
 	Card          Card          `json:"-" gorm:"foreignKey:CardNumber"`
 }
 
-func getStringPointer(s string) *string {
-	return &s
-}
-
 func (p *Payment) BeforeCreate(tx *gorm.DB) (err error) {
 	p.ID = generateUUID()
 	now := time.Now()
