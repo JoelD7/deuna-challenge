@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 	"github.com/JoelD7/deuna-challenge/app/models"
+	"github.com/JoelD7/deuna-challenge/app/queue"
 )
 
 type PaymentManager interface {
@@ -20,6 +21,15 @@ func NewPaymentCreator(pm PaymentManager) func(ctx context.Context, payment *mod
 	return func(ctx context.Context, payment *models.Payment) (string, error) {
 		payment.Status = models.PaymentStatusProcessing
 
-		return pm.CreatePayment(ctx, *payment)
+		id, err := pm.CreatePayment(ctx, *payment)
+		if err != nil {
+			return "", err
+		}
+
+		payment.ID = id
+
+		queue.Enqueue(payment)
+
+		return id, nil
 	}
 }
