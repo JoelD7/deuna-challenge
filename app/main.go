@@ -5,6 +5,11 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"os"
+)
+
+var (
+	appURL = os.Getenv("APP_URL")
 )
 
 func main() {
@@ -18,7 +23,7 @@ func main() {
 	r.HandleFunc("/card", controllers.CreateCardHandler).
 		Methods(http.MethodPost)
 
-	log.Fatal(http.ListenAndServe("localhost:8080", r))
+	log.Fatal(http.ListenAndServe(appURL, r))
 }
 
 func headerMiddleware(next http.Handler) http.Handler {

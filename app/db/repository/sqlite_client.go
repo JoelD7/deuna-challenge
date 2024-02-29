@@ -7,18 +7,21 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"os"
 )
 
 type SQLiteClient struct{}
 
 var (
 	db *gorm.DB
+
+	appDB = os.Getenv("APP_DB")
 )
 
 func init() {
 	var err error
 
-	db, err = gorm.Open(sqlite.Open("deuna-db.sqlt"), &gorm.Config{})
+	db, err = gorm.Open(sqlite.Open(appDB), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
