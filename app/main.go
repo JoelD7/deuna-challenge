@@ -14,9 +14,15 @@ func main() {
 		panic("failed to connect database")
 	}
 
-	var payment models.Payment
-	db.First(&payment, "1") // find payment with integer primary key
+	var customer models.Customer
 
-	data, err := json.Marshal(payment)
-	fmt.Println("Payment: ", string(data))
+	err = db.Model(&models.Customer{}).Preload("Cards").First(&customer, "1").Error
+
+	if err != nil {
+		fmt.Println("Error: ", err)
+		return
+	}
+
+	data, err := json.Marshal(customer)
+	fmt.Println("Customer: ", string(data))
 }
