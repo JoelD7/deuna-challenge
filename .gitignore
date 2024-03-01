@@ -1,4 +1,5 @@
 .idea/
 *.bkp
+*.sqlt
 vendor
 bin/
