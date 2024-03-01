@@ -7,6 +7,43 @@ import (
 	"net/http"
 )
 
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	user, err := validateLoginRequest(r)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	authenticateUser := usecases.NewUserAuthenticator(sqliteClient)
+
+	_, err = authenticateUser(r.Context(), *user.Email, *user.Password)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func validateLoginRequest(r *http.Request) (*models.User, error) {
+	var user models.User
+
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Email == nil {
+		return nil, models.ErrMissingEmail
+	}
+
+	if user.Password == nil {
+		return nil, models.ErrMissingPassword
+	}
+
+	return &user, nil
+}
+
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := validateSignupRequest(r)
 	if err != nil {

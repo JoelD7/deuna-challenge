@@ -19,6 +19,8 @@ func main() {
 
 	r.HandleFunc("/signup", controllers.SignupHandler).
 		Methods(http.MethodPost)
+	r.HandleFunc("/login", controllers.LoginHandler).
+		Methods(http.MethodPost)
 
 	r.HandleFunc("/payments", controllers.CreatePaymentHandler).
 		Methods(http.MethodPost)

@@ -37,6 +37,8 @@ var (
 	ErrMissingLastName              = errors.New("missing last name")
 	ErrMissingPhoneNumber           = errors.New("missing phone number")
 	ErrMissingAddress               = errors.New("missing address")
+	ErrWrongCredentials             = errors.New("wrong credentials")
+	ErrUserNotFound                 = errors.New("user not found")
 
 	statusByError = map[error]ErrResponse{
 		ErrPaymentNotFound:              {ErrPaymentNotFound.Error(), http.StatusNotFound},
@@ -64,6 +66,8 @@ var (
 		ErrMissingLastName:              {ErrMissingLastName.Error(), http.StatusBadRequest},
 		ErrMissingPhoneNumber:           {ErrMissingPhoneNumber.Error(), http.StatusBadRequest},
 		ErrMissingAddress:               {ErrMissingAddress.Error(), http.StatusBadRequest},
+		ErrWrongCredentials:             {ErrWrongCredentials.Error(), http.StatusUnauthorized},
+		ErrUserNotFound:                 {ErrUserNotFound.Error(), http.StatusNotFound},
 	}
 )
 

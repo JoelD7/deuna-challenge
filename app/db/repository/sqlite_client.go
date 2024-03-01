@@ -116,3 +116,19 @@ func (cli *SQLiteClient) CreateUser(ctx context.Context, user models.User) error
 
 	return result.Error
 }
+
+func (cli *SQLiteClient) GetUser(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+
+	err := db.Model(&models.User{}).Preload(clause.Associations).First(&user, "email = ?", email).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrUserNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}

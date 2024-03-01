@@ -40,12 +40,12 @@ CREATE TABLE `payments` (
   PRIMARY KEY (`id`)
 );
 
-INSERT INTO `users` ( `email`, `first_name`, `last_name`,`role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('1@mail.com', 'John', 'Doe', 'customer', '1234567890', '123 Main St', datetime(), datetime());
-INSERT INTO `users` ( `email`, `first_name`, `last_name`,`role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('2@mail.com', 'Jane', 'Doe',  'customer', '8504569870', '852 Main St', datetime(), datetime());
-INSERT INTO `users` ( `email`, `first_name`, `last_name`,`role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('3@mail.com', 'John', 'Smith', 'customer', '1234567890', '789 Main St', datetime(), datetime());
-INSERT INTO `users` ( `email`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('4@mail.com', 'Michael', 'Landon', 'merchant', '5201469800', '700 Fifth St', datetime(), datetime());
-INSERT INTO `users` ( `email`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('5@mail.com', 'Barbara', 'Walters', 'merchant', '5201469800', '852 Seventh St', datetime(), datetime());
-INSERT INTO `users` ( `email`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('6@mail.com', 'Michael', 'Jordan', 'merchant', '8520147963', '789 Ninth St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('1@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'John', 'Doe', 'customer', '1234567890', '123 Main St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('2@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'Jane', 'Doe',  'customer', '8504569870', '852 Main St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('3@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'John', 'Smith', 'customer', '1234567890', '789 Main St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('4@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'Michael', 'Landon', 'merchant', '5201469800', '700 Fifth St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('5@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'Barbara', 'Walters', 'merchant', '5201469800', '852 Seventh St', datetime(), datetime());
+INSERT INTO `users` ( `email`, `password`, `first_name`, `last_name`, `role`, `phone_number`, `address`, `created_date`, `updated_date` ) VALUES ('6@mail.com', '$2a$10$dWNhqS/9PV77oXoSSXwQQeQ1QaYKSfjRU8QSn0DXEfndZTqGJcETm', 'Michael', 'Jordan', 'merchant', '8520147963', '789 Ninth St', datetime(), datetime());
 
 INSERT INTO `cards` ( `card_number`, `user_id`, `expiration`, `vendor`,`type`, `ccv`, `created_date`, `updated_date` ) VALUES (1654720058763025, '1@mail.com', '12/2028', 'Visa', 'debit', 123, datetime(), datetime());
 INSERT INTO `cards` ( `card_number`, `user_id`, `expiration`, `vendor`,`type`, `ccv`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2@mail.com', '05/2028', 'Mastercard', 'credit', 788, datetime(), datetime());
