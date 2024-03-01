@@ -22,6 +22,10 @@ var (
 	ErrMissingCardType             = errors.New("missing card type")
 	ErrInvalidCardType             = errors.New("invalid card type. Must be either 'debit' or 'credit'")
 	ErrCardNotFound                = errors.New("card not registered")
+	ErrMissingAmount               = errors.New("missing amount")
+	ErrMissingMerchantAccountID    = errors.New("missing merchant account ID")
+	ErrAccountNotFound             = errors.New("account not found")
+	ErrTransactionNotFound         = errors.New("transaction not found")
 
 	statusByError = map[error]ErrResponse{
 		ErrMissingCardNumber:           {ErrMissingCardNumber.Error(), http.StatusBadRequest},
@@ -34,6 +38,10 @@ var (
 		ErrMissingCardType:             {ErrMissingCardType.Error(), http.StatusBadRequest},
 		ErrInvalidCardType:             {ErrInvalidCardType.Error(), http.StatusBadRequest},
 		ErrCardNotFound:                {ErrCardNotFound.Error(), http.StatusNotFound},
+		ErrMissingAmount:               {ErrMissingAmount.Error(), http.StatusBadRequest},
+		ErrMissingMerchantAccountID:    {ErrMissingMerchantAccountID.Error(), http.StatusBadRequest},
+		ErrAccountNotFound:             {ErrAccountNotFound.Error(), http.StatusNotFound},
+		ErrTransactionNotFound:         {ErrTransactionNotFound.Error(), http.StatusNotFound},
 	}
 )
 

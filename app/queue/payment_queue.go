@@ -23,7 +23,7 @@ type queue struct {
 	size int
 }
 
-func Enqueue(item *models.Payment) {
+func Add(item *models.Payment) {
 	newNode := &node{data: item, next: nil}
 	if q.tail == nil {
 		q.head = newNode
@@ -35,7 +35,7 @@ func Enqueue(item *models.Payment) {
 	q.size++
 }
 
-func Dequeue() *models.Payment {
+func RemoveFirst() *models.Payment {
 	if q.head == nil {
 		return nil
 	}
@@ -48,6 +48,31 @@ func Dequeue() *models.Payment {
 
 	q.size--
 	return item
+}
+
+// RemoveForMerchant removes the first payment in the queue for the given merchantID
+func RemoveForMerchant(merchantAccountID string) *models.Payment {
+	if q.head == nil {
+		return nil
+	}
+
+	var prev *node
+	curr := q.head
+	for curr != nil {
+		if *curr.data.MerchantAccountID == merchantAccountID {
+			if prev == nil {
+				return RemoveFirst()
+			}
+
+			prev.next = curr.next
+			q.size--
+			return curr.data
+		}
+
+		prev = curr
+		curr = curr.next
+	}
+	return nil
 }
 
 func IsEmpty() bool {

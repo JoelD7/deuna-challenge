@@ -19,6 +19,11 @@ func main() {
 
 	r.HandleFunc("/card", controllers.ValidateCardHandler).
 		Methods(http.MethodPost)
+	r.HandleFunc("/card/{cardID}", controllers.GetCardHandler).
+		Methods(http.MethodGet)
+
+	r.HandleFunc("/transaction", controllers.CreateTransactionHandler).
+		Methods(http.MethodPost)
 
 	fmt.Println("Bank server running on", bankHost)
 	log.Fatal(http.ListenAndServe(bankHost, r))

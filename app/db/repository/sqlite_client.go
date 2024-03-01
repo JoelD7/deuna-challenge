@@ -61,6 +61,10 @@ func (cli *SQLiteClient) CreatePayment(ctx context.Context, payment models.Payme
 	return payment.ID, nil
 }
 
+func (cli *SQLiteClient) UpdatePayment(ctx context.Context, payment models.Payment) error {
+	return db.Save(&payment).Error
+}
+
 func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models.Card, error) {
 	var card models.Card
 

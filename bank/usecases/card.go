@@ -20,3 +20,9 @@ func NewCardValidator(cm CardManager) func(ctx context.Context, card *models.Car
 		return nil
 	}
 }
+
+func NewCardGetter(cm CardManager) func(ctx context.Context, cardNumber int64) (*models.Card, error) {
+	return func(ctx context.Context, cardNumber int64) (*models.Card, error) {
+		return cm.GetCard(ctx, cardNumber)
+	}
+}

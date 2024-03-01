@@ -17,10 +17,13 @@ func main() {
 	r := mux.NewRouter()
 	r.Use(headerMiddleware)
 
-	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).
-		Methods(http.MethodGet)
 	r.HandleFunc("/payments", controllers.CreatePaymentHandler).
 		Methods(http.MethodPost)
+	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).
+		Methods(http.MethodGet)
+	r.HandleFunc("/payments/process", controllers.ProcessPaymentHandler).
+		Methods(http.MethodPost)
+
 	r.HandleFunc("/card", controllers.CreateCardHandler).
 		Methods(http.MethodPost)
 

@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"github.com/JoelD7/deuna-challenge/app/db/repository"
 	"github.com/JoelD7/deuna-challenge/app/models"
+	"github.com/JoelD7/deuna-challenge/app/queue"
 	"github.com/JoelD7/deuna-challenge/app/usecases"
 	"github.com/gorilla/mux"
 	"net/http"
 )
+
+type processPaymentRequest struct {
+	MerchantAccountID string `json:"merchantAccountID"`
+}
 
 func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -72,12 +77,8 @@ func validateCreatePaymentRequest(r *http.Request) (*models.Payment, error) {
 		return nil, models.ErrMissingCustomerID
 	}
 
-	if payment.MerchantID == nil {
-		return nil, models.ErrMissingMerchantID
-	}
-
-	if *payment.CustomerID == *payment.MerchantID {
-		return nil, models.ErrEqualCustomerIDAndMerchantID
+	if payment.MerchantAccountID == nil {
+		return nil, models.ErrMissingMerchantAccountID
 	}
 
 	if payment.CardNumber == nil {
@@ -85,6 +86,42 @@ func validateCreatePaymentRequest(r *http.Request) (*models.Payment, error) {
 	}
 
 	return &payment, nil
+}
+
+func ProcessPaymentHandler(w http.ResponseWriter, r *http.Request) {
+	if queue.IsEmpty() {
+		w.WriteHeader(http.StatusNoContent)
+
+		_, err := w.Write([]byte("No payments to process"))
+		if err != nil {
+			models.WriteErrorResponse(w, err)
+		}
+
+		return
+	}
+
+	var paymentReq processPaymentRequest
+
+	err := json.NewDecoder(r.Body).Decode(&paymentReq)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	if paymentReq.MerchantAccountID == "" {
+		models.WriteErrorResponse(w, models.ErrMissingMerchantAccountID)
+		return
+	}
+
+	processPayment := usecases.NewPaymentProcessor(repository.NewSQLiteClient())
+
+	err = processPayment(r.Context(), paymentReq.MerchantAccountID)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func writeJSONData(w http.ResponseWriter, data interface{}) {

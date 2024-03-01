@@ -8,9 +8,12 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"os"
+	"time"
 )
 
-type SQLiteClient struct{}
+type SQLiteClient struct {
+	conn *gorm.DB
+}
 
 var (
 	db *gorm.DB
@@ -28,13 +31,19 @@ func init() {
 }
 
 func NewSQLiteClient() *SQLiteClient {
-	return &SQLiteClient{}
+	return &SQLiteClient{
+		conn: db,
+	}
+}
+
+func (cli *SQLiteClient) SetConnection(conn *gorm.DB) {
+	cli.conn = conn
 }
 
 func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models.Card, error) {
 	var card models.Card
 
-	err := db.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ?", cardNumber).Error
+	err := cli.conn.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ?", cardNumber).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, models.ErrCardNotFound
@@ -45,4 +54,93 @@ func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models
 	}
 
 	return &card, nil
+}
+
+func (cli *SQLiteClient) UpdateAccount(ctx context.Context, account models.Account) error {
+	return cli.conn.Save(&account).Error
+}
+
+func (cli *SQLiteClient) GetAccount(ctx context.Context, accountID string) (*models.Account, error) {
+	var account models.Account
+
+	err := cli.conn.Model(&models.Account{}).Preload(clause.Associations).First(&account, "id = ?", accountID).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrAccountNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &account, nil
+}
+
+func (cli *SQLiteClient) ProcessTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error) {
+	transactionID := ""
+
+	err := cli.conn.Transaction(func(tx *gorm.DB) error {
+		cli.SetConnection(tx)
+
+		merchantAccount, err := cli.GetAccount(ctx, merchantAccountID)
+		if err != nil {
+			return err
+		}
+
+		now := time.Now()
+
+		newTransaction := &models.Transaction{
+			AccountID:          clientAccount.ID,
+			RecipientAccountID: merchantAccount.ID,
+			Amount:             amount,
+			Type:               models.TransactionTypeTransfer,
+			CreatedDate:        &now,
+		}
+
+		id, err := cli.CreateTransaction(ctx, *newTransaction)
+		if err != nil {
+			return err
+		}
+
+		clientAccount.Balance -= amount
+		if err = cli.UpdateAccount(ctx, clientAccount); err != nil {
+			return err
+		}
+
+		merchantAccount.Balance += amount
+		if err = cli.UpdateAccount(ctx, *merchantAccount); err != nil {
+			return err
+		}
+
+		transactionID = id
+
+		return nil
+	})
+
+	return transactionID, err
+}
+
+func (cli *SQLiteClient) CreateTransaction(ctx context.Context, transaction models.Transaction) (string, error) {
+	err := cli.conn.Create(&transaction).Error
+
+	if err != nil {
+		return "", err
+	}
+
+	return transaction.ID, nil
+}
+
+func (cli *SQLiteClient) GetTransaction(ctx context.Context, transactionID string) (*models.Transaction, error) {
+	var transaction models.Transaction
+
+	err := cli.conn.Model(&models.Transaction{}).Preload(clause.Associations).First(&transaction, "id = ?", transactionID).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrTransactionNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &transaction, nil
 }

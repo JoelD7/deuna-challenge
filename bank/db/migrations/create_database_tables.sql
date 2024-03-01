@@ -62,8 +62,8 @@ INSERT INTO `accounts` ( `id`, `customer_id`, `balance`, `type`, `open_date`, `u
 INSERT INTO `accounts` ( `id`, `customer_id`, `balance`, `type`, `open_date`, `updated_date` ) VALUES ('5', '5', 5000.00, 'checking', datetime(), datetime());
 INSERT INTO `accounts` ( `id`, `customer_id`, `balance`, `type`, `open_date`, `updated_date` ) VALUES ('6', '6', 6000.00, 'savings', datetime(), datetime());
 
-INSERT INTO `cards` ( `card_number`, `customer_id`, `account_id`, `expiration`, `vendor`, `ccv`, `balance`, `type`, `created_date`, `updated_date` ) VALUES (1654720058763025, '1', '', '12/2028', 'Visa', 123, 1000.00, 'credit', datetime(), datetime());
-INSERT INTO `cards` ( `card_number`, `customer_id`, `account_id`, `expiration`, `vendor`, `ccv`, `balance`, `type`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2', '2', '05/2028', 'Mastercard', 788, 0.0, 'debit', datetime(), datetime());
+INSERT INTO `cards` ( `card_number`, `customer_id`, `account_id`, `expiration`, `vendor`, `ccv`, `balance`, `type`, `created_date`, `updated_date` ) VALUES (1654720058763025, '1', '1', '12/2028', 'Visa', 123, 0.0, 'debit', datetime(), datetime());
+INSERT INTO `cards` ( `card_number`, `customer_id`, `account_id`, `expiration`, `vendor`, `ccv`, `balance`, `type`, `created_date`, `updated_date` ) VALUES (7048506547895036, '2', '', '05/2028', 'Mastercard', 788, 1250.0, 'credit', datetime(), datetime());
 INSERT INTO `cards` ( `card_number`, `customer_id`, `account_id`, `expiration`, `vendor`, `ccv`, `balance`, `type`, `created_date`, `updated_date` ) VALUES (5004896175620369, '3', '3', '02/2030', 'Visa', 456, 0.0, 'debit', datetime(), datetime());
 
 INSERT INTO `transactions` ( `id`, `account_id`, `recipient_account_id`, `amount`, `type`, `created_date` ) VALUES ('1', '1', '4', 100.00, 'transfer', datetime());

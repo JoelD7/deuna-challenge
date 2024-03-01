@@ -16,7 +16,7 @@ var (
 	ErrInvalidAmount                = errors.New("invalid amount")
 	ErrMissingAmount                = errors.New("missing amount")
 	ErrMissingCustomerID            = errors.New("missing customer ID")
-	ErrMissingMerchantID            = errors.New("missing merchant ID")
+	ErrMissingMerchantAccountID     = errors.New("missing merchant account ID")
 	ErrEqualCustomerIDAndMerchantID = errors.New("customer ID and merchant ID cannot be equal")
 	ErrMissingCardNumber            = errors.New("missing card number")
 	ErrInvalidCardNumber            = errors.New("invalid card number")
@@ -35,7 +35,7 @@ var (
 		ErrInvalidAmount:                {ErrInvalidAmount.Error(), http.StatusBadRequest},
 		ErrMissingAmount:                {ErrMissingAmount.Error(), http.StatusBadRequest},
 		ErrMissingCustomerID:            {ErrMissingCustomerID.Error(), http.StatusBadRequest},
-		ErrMissingMerchantID:            {ErrMissingMerchantID.Error(), http.StatusBadRequest},
+		ErrMissingMerchantAccountID:     {ErrMissingMerchantAccountID.Error(), http.StatusBadRequest},
 		ErrEqualCustomerIDAndMerchantID: {ErrEqualCustomerIDAndMerchantID.Error(), http.StatusBadRequest},
 		ErrMissingCardNumber:            {ErrMissingCardNumber.Error(), http.StatusBadRequest},
 		ErrInvalidCardNumber:            {ErrInvalidCardNumber.Error(), http.StatusBadRequest},

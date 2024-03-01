@@ -6,8 +6,10 @@ import (
 	"github.com/JoelD7/deuna-challenge/bank/db/repository"
 	"github.com/JoelD7/deuna-challenge/bank/models"
 	"github.com/JoelD7/deuna-challenge/bank/usecases"
+	"github.com/gorilla/mux"
 	"net/http"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -21,6 +23,27 @@ const (
 var (
 	cardExpiryRegex = regexp.MustCompile(`^(0[1-9]|1[0-2])\/(0[0-9]|1[0-9]|2[0-9])$`)
 )
+
+func GetCardHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	cardID, err := strconv.Atoi(vars["cardID"])
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	getCard := usecases.NewCardGetter(repository.NewSQLiteClient())
+
+	card, err := getCard(r.Context(), int64(cardID))
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	writeJSONData(w, card)
+}
 
 func ValidateCardHandler(w http.ResponseWriter, r *http.Request) {
 	cardValidator := usecases.NewCardValidator(repository.NewSQLiteClient())
@@ -88,7 +111,7 @@ func validateCardFields(card *models.Card) error {
 		return models.ErrMissingCardType
 	}
 
-	if *card.Type != *models.Debit && *card.Type != *models.Credit {
+	if *card.Type != models.CardTypeDebit && *card.Type != models.CardTypeCredit {
 		return models.ErrInvalidCardType
 	}
 
@@ -108,4 +131,18 @@ func parseCardExpiration(expr string) error {
 	}
 
 	return nil
+}
+
+func writeJSONData(w http.ResponseWriter, data interface{}) {
+	jsonData, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	_, err = w.Write(jsonData)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
