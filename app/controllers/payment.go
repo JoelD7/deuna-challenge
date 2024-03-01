@@ -10,6 +10,10 @@ import (
 	"net/http"
 )
 
+var (
+	sqliteClient = repository.NewSQLiteClient()
+)
+
 type processPaymentRequest struct {
 	MerchantAccountID string `json:"merchantAccountID"`
 }
@@ -22,7 +26,7 @@ func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	paymentID := vars["paymentID"]
 
-	getPayment := usecases.NewPaymentGetter(repository.NewSQLiteClient())
+	getPayment := usecases.NewPaymentGetter(sqliteClient)
 
 	payment, err := getPayment(r.Context(), paymentID)
 	if err != nil {
@@ -42,8 +46,8 @@ func CreatePaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	createPayment := usecases.NewPaymentCreator(repository.NewSQLiteClient())
-	getPayment := usecases.NewPaymentGetter(repository.NewSQLiteClient())
+	createPayment := usecases.NewPaymentCreator(sqliteClient)
+	getPayment := usecases.NewPaymentGetter(sqliteClient)
 
 	id, err := createPayment(r.Context(), payment)
 	if err != nil {
@@ -117,7 +121,7 @@ func ProcessPaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	processPayment := usecases.NewPaymentProcessor(repository.NewSQLiteClient())
+	processPayment := usecases.NewPaymentProcessor(sqliteClient)
 
 	err = processPayment(r.Context(), paymentReq.MerchantAccountID)
 	if err != nil {
@@ -142,7 +146,7 @@ func RefundPaymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	refundPayment := usecases.NewPaymentRefunder(repository.NewSQLiteClient())
+	refundPayment := usecases.NewPaymentRefunder(sqliteClient)
 
 	err = refundPayment(r.Context(), refundReq.TransactionID)
 	if err != nil {
