@@ -24,7 +24,7 @@ type Payment struct {
 	FailureReason     string        `json:"failureReason" gorm:"failure_reason"`
 	CreatedDate       *time.Time    `json:"createdDate" gorm:"created_date"`
 	UpdatedDate       *time.Time    `json:"updatedDate" gorm:"updated_date"`
-	Customer          Customer      `json:"-" gorm:"foreignKey:UserID"`
+	Customer          User          `json:"-" gorm:"foreignKey:UserID"`
 	Card              Card          `json:"-" gorm:"foreignKey:CardNumber"`
 }
 

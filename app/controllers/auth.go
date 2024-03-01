@@ -16,13 +16,45 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	authenticateUser := usecases.NewUserAuthenticator(sqliteClient)
 
-	_, err = authenticateUser(r.Context(), *user.Email, *user.Password)
+	user, err = authenticateUser(r.Context(), *user.Email, *user.Password)
 	if err != nil {
 		models.WriteErrorResponse(w, err)
 		return
 	}
 
+	generateTokens := usecases.NewUserTokenGenerator()
+
+	accessToken, refreshToken, err := generateTokens(r.Context(), user)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	setTokenCookies(w, accessToken, refreshToken)
+
 	w.WriteHeader(http.StatusOK)
+}
+
+func setTokenCookies(w http.ResponseWriter, accessToken, refreshToken *models.AuthToken) {
+	accessTokenCookie := http.Cookie{
+		Name:     "accessToken",
+		Value:    accessToken.Value,
+		Expires:  accessToken.Expiration,
+		Secure:   true,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, &accessTokenCookie)
+
+	refreshTokenCookie := http.Cookie{
+		Name:     "refreshToken",
+		Value:    refreshToken.Value,
+		Expires:  refreshToken.Expiration,
+		Secure:   true,
+		HttpOnly: true,
+	}
+
+	http.SetCookie(w, &refreshTokenCookie)
 }
 
 func validateLoginRequest(r *http.Request) (*models.User, error) {
