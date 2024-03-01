@@ -13,7 +13,7 @@ CREATE TABLE `customers` (
 CREATE TABLE `accounts` (
   `id` text NOT NULL,
   `customer_id` text NOT NULL,
-  `balance` real NOT NULL,
+  `balance` real NOT NULL CHECK(balance >= 0),
   `type` text NOT NULL,
   `open_date` datetime,
   `updated_date` datetime,
@@ -28,7 +28,7 @@ CREATE TABLE `cards` (
   `expiration` text NOT NULL,
   `vendor` text NOT NULL,
   `ccv` integer NOT NULL,
-  `balance` real,
+  `balance` real CHECK(balance >= 0),
   `type` text NOT NULL,
   `created_date` datetime,
   `updated_date` datetime,
