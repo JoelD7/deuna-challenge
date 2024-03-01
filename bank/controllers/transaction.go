@@ -5,6 +5,7 @@ import (
 	"github.com/JoelD7/deuna-challenge/bank/db/repository"
 	"github.com/JoelD7/deuna-challenge/bank/models"
 	"github.com/JoelD7/deuna-challenge/bank/usecases"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -60,4 +61,19 @@ func validateTransactionFields(tr *transactionRequest) error {
 	}
 
 	return nil
+}
+
+func RefundTransactionHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	transactionID := vars["transactionID"]
+
+	refundTransaction := usecases.NewTransactionRefunder(repository.NewSQLiteClient())
+
+	err := refundTransaction(r.Context(), transactionID)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

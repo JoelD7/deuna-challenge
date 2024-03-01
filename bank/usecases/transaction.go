@@ -9,6 +9,8 @@ type TransactionManager interface {
 	CreateTransaction(ctx context.Context, transaction models.Transaction) (string, error)
 	ProcessDebitTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error)
 	ProcessCreditTransaction(ctx context.Context, clientCard *models.Card, merchantAccountID string, amount float64) (string, error)
+	RefundDebitTransaction(ctx context.Context, transaction *models.Transaction) error
+	RefundCreditTransaction(ctx context.Context, transaction *models.Transaction) error
 	GetTransaction(ctx context.Context, transactionID string) (*models.Transaction, error)
 	GetAccount(ctx context.Context, accountID string) (*models.Account, error)
 	UpdateAccount(ctx context.Context, account models.Account) error
@@ -30,6 +32,21 @@ func NewTransactionProcessor(tm TransactionManager, cm CardManager) func(ctx con
 		}
 
 		return tm.ProcessCreditTransaction(ctx, card, merchantAccountID, amount)
+	}
+}
+
+func NewTransactionRefunder(tm TransactionManager) func(ctx context.Context, transactionID string) error {
+	return func(ctx context.Context, transactionID string) error {
+		transaction, err := tm.GetTransaction(ctx, transactionID)
+		if err != nil {
+			return err
+		}
+
+		if transaction.Type == models.TransactionTypeTransfer {
+			return tm.RefundDebitTransaction(ctx, transaction)
+		}
+
+		return tm.RefundCreditTransaction(ctx, transaction)
 	}
 }
 

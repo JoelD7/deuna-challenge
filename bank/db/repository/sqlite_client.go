@@ -168,6 +168,82 @@ func (cli *SQLiteClient) ProcessCreditTransaction(ctx context.Context, clientCar
 	return transactionID, err
 }
 
+func (cli *SQLiteClient) RefundDebitTransaction(ctx context.Context, transaction *models.Transaction) error {
+	err := cli.conn.Transaction(func(tx *gorm.DB) error {
+		cli.SetConnection(tx)
+
+		amount := transaction.Amount
+
+		merchantAccount, err := cli.GetAccount(ctx, transaction.RecipientAccountID)
+		if err != nil {
+			return err
+		}
+
+		merchantAccount.Balance -= amount
+
+		clientAccount, err := cli.GetAccount(ctx, transaction.AccountID)
+		if err != nil {
+			return err
+		}
+
+		clientAccount.Balance += amount
+
+		if err = cli.UpdateAccount(ctx, *merchantAccount); err != nil {
+			return err
+		}
+
+		if err = cli.UpdateAccount(ctx, *clientAccount); err != nil {
+			return err
+		}
+
+		if err = cli.DeleteTransaction(ctx, transaction.ID); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return err
+}
+
+func (cli *SQLiteClient) RefundCreditTransaction(ctx context.Context, transaction *models.Transaction) error {
+	err := cli.conn.Transaction(func(tx *gorm.DB) error {
+		cli.SetConnection(tx)
+
+		amount := transaction.Amount
+
+		merchantAccount, err := cli.GetAccount(ctx, transaction.RecipientAccountID)
+		if err != nil {
+			return err
+		}
+
+		merchantAccount.Balance -= amount
+
+		clientCard, err := cli.GetCard(ctx, transaction.CreditCardNumber)
+		if err != nil {
+			return err
+		}
+
+		clientCard.Balance += amount
+
+		if err = cli.UpdateAccount(ctx, *merchantAccount); err != nil {
+			return err
+		}
+
+		if err = cli.UpdateCard(ctx, *clientCard); err != nil {
+			return err
+		}
+
+		if err = cli.DeleteTransaction(ctx, transaction.ID); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return err
+}
+
 func (cli *SQLiteClient) CreateTransaction(ctx context.Context, transaction models.Transaction) (string, error) {
 	err := cli.conn.Create(&transaction).Error
 
@@ -191,4 +267,8 @@ func (cli *SQLiteClient) GetTransaction(ctx context.Context, transactionID strin
 	}
 
 	return &transaction, nil
+}
+
+func (cli *SQLiteClient) DeleteTransaction(ctx context.Context, transactionID string) error {
+	return cli.conn.Delete(&models.Transaction{}, transactionID).Error
 }

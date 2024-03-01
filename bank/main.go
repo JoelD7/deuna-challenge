@@ -24,6 +24,8 @@ func main() {
 
 	r.HandleFunc("/transaction", controllers.CreateTransactionHandler).
 		Methods(http.MethodPost)
+	r.HandleFunc("/transaction/{transactionID}", controllers.RefundTransactionHandler).
+		Methods(http.MethodDelete)
 
 	fmt.Println("Bank server running on", bankHost)
 	log.Fatal(http.ListenAndServe(bankHost, r))
