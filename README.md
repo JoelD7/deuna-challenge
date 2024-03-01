@@ -32,9 +32,8 @@ Entities Involved:
 6. The application is now running and can be accessed via the following URL: `http://localhost:8080`.
 7. Before making any request, you must first authenticate using the `/login` endpoint. You may use any of the users that appear on the `create_database_tables.sql` file. The password for all the users is `1234`.
 
-## Structure 
-The application is divided into two main services: the payment platform and the acquiring bank. A user will only interact with the payment platform. The payment platform will then interact with the acquiring bank to process the payment via the API that the bank exposes. 
-### API
+## Use of the API
+
 - `POST /signup`: This endpoint is used to create a new user. It requires a JSON body with the following structure:
   ```json
   {
@@ -90,7 +89,16 @@ The application is divided into two main services: the payment platform and the 
     "vendor": "Visa"
   }
   ```
-## Design decisions and assumptionsp
+## Structure
+The application is divided into two main services: the payment platform and the acquiring bank. A user will only interact with the payment platform. The payment platform will then interact with the acquiring bank to process the payment via the API that the bank exposes.
+### Database diagram - Payment platform
+![img.png](img.png)
+
+### Database diagram - Acquiring bank
+![img_1.png](img_1.png)
+
+
+## Design decisions and assumptions
 - A payment must have a customer and a merchant. When a customer makes a payment, it is to a specific merchant. 
   - It is assumed that when a merchant publishes a product, they add the account to which they want the funds to go once a customer purchases the product. For this reason, when making a payment, the `merchantAccountID` for which it is made must be specified. 
   - A payment is made with a card previously registered in the application. This means that to make a payment with a new card, the customer must first add it by making a POST to the `/card` endpoint. 
