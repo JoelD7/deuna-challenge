@@ -14,6 +14,10 @@ type processPaymentRequest struct {
 	MerchantAccountID string `json:"merchantAccountID"`
 }
 
+type refundPaymentRequest struct {
+	TransactionID string `json:"transactionID"`
+}
+
 func GetPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	paymentID := vars["paymentID"]
@@ -116,6 +120,31 @@ func ProcessPaymentHandler(w http.ResponseWriter, r *http.Request) {
 	processPayment := usecases.NewPaymentProcessor(repository.NewSQLiteClient())
 
 	err = processPayment(r.Context(), paymentReq.MerchantAccountID)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func RefundPaymentHandler(w http.ResponseWriter, r *http.Request) {
+	var refundReq refundPaymentRequest
+
+	err := json.NewDecoder(r.Body).Decode(&refundReq)
+	if err != nil {
+		models.WriteErrorResponse(w, err)
+		return
+	}
+
+	if refundReq.TransactionID == "" {
+		models.WriteErrorResponse(w, models.ErrMissingTransactionID)
+		return
+	}
+
+	refundPayment := usecases.NewPaymentRefunder(repository.NewSQLiteClient())
+
+	err = refundPayment(r.Context(), refundReq.TransactionID)
 	if err != nil {
 		models.WriteErrorResponse(w, err)
 		return

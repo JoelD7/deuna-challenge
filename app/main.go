@@ -24,6 +24,9 @@ func main() {
 	r.HandleFunc("/payments/process", controllers.ProcessPaymentHandler).
 		Methods(http.MethodPost)
 
+	r.HandleFunc("/refund", controllers.RefundPaymentHandler).
+		Methods(http.MethodPost)
+
 	r.HandleFunc("/card", controllers.CreateCardHandler).
 		Methods(http.MethodPost)
 

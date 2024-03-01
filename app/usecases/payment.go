@@ -89,3 +89,28 @@ func NewPaymentProcessor(pm PaymentManager) func(ctx context.Context, merchantAc
 		return nil
 	}
 }
+
+func NewPaymentRefunder(pm PaymentManager) func(ctx context.Context, transactionID string) error {
+	return func(ctx context.Context, transactionID string) error {
+		url := "http://" + bankHost + "/transaction/" + transactionID
+
+		req, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			return fmt.Errorf("error creating request: %w", err)
+		}
+
+		client := &http.Client{}
+
+		resp, err := client.Do(req)
+		if err != nil {
+			return fmt.Errorf("error sending request to bank: %w", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != http.StatusOK {
+			return fmt.Errorf("error refunding payment")
+		}
+
+		return nil
+	}
+}
