@@ -98,6 +98,7 @@ func (cli *SQLiteClient) ProcessDebitTransaction(ctx context.Context, clientAcco
 			RecipientAccountID: merchantAccount.ID,
 			Amount:             amount,
 			Type:               models.TransactionTypeTransfer,
+			Status:             models.TransactionStatusSuccess,
 			CreatedDate:        &now,
 		}
 
@@ -142,6 +143,7 @@ func (cli *SQLiteClient) ProcessCreditTransaction(ctx context.Context, clientCar
 			RecipientAccountID: merchantAccount.ID,
 			Amount:             amount,
 			Type:               models.TransactionTypeCredit,
+			Status:             models.TransactionStatusSuccess,
 			CreatedDate:        &now,
 		}
 
@@ -196,7 +198,7 @@ func (cli *SQLiteClient) RefundDebitTransaction(ctx context.Context, transaction
 			return err
 		}
 
-		if err = cli.DeleteTransaction(ctx, transaction); err != nil {
+		if err = cli.UpdateTransaction(ctx, transaction); err != nil {
 			return err
 		}
 
@@ -234,7 +236,7 @@ func (cli *SQLiteClient) RefundCreditTransaction(ctx context.Context, transactio
 			return err
 		}
 
-		if err = cli.DeleteTransaction(ctx, transaction); err != nil {
+		if err = cli.UpdateTransaction(ctx, transaction); err != nil {
 			return err
 		}
 
@@ -267,6 +269,10 @@ func (cli *SQLiteClient) GetTransaction(ctx context.Context, transactionID strin
 	}
 
 	return &transaction, nil
+}
+
+func (cli *SQLiteClient) UpdateTransaction(ctx context.Context, transaction *models.Transaction) error {
+	return cli.conn.Save(&transaction).Error
 }
 
 func (cli *SQLiteClient) DeleteTransaction(ctx context.Context, transaction *models.Transaction) error {

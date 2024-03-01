@@ -94,7 +94,7 @@ func NewPaymentRefunder(pm PaymentManager) func(ctx context.Context, transaction
 	return func(ctx context.Context, transactionID string) error {
 		url := "http://" + bankHost + "/transaction/" + transactionID
 
-		req, err := http.NewRequest(http.MethodDelete, url, nil)
+		req, err := http.NewRequest(http.MethodPut, url, nil)
 		if err != nil {
 			return fmt.Errorf("error creating request: %w", err)
 		}

@@ -42,6 +42,8 @@ func NewTransactionRefunder(tm TransactionManager) func(ctx context.Context, tra
 			return err
 		}
 
+		transaction.Status = models.TransactionStatusRefunded
+
 		if transaction.Type == models.TransactionTypeTransfer {
 			return tm.RefundDebitTransaction(ctx, transaction)
 		}

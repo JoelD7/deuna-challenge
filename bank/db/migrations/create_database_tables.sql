@@ -44,6 +44,7 @@ CREATE TABLE `transactions` (
   `credit_card_number`integer,
   `amount` real NOT NULL,
   `type` text NOT NULL,
+  `status` text,
   `created_date` datetime,
   PRIMARY KEY (`id`)
 );
