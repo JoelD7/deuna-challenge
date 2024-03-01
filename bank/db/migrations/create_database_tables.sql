@@ -41,6 +41,7 @@ CREATE TABLE `transactions` (
   `id` text NOT NULL,
   `account_id` text NOT NULL,
   `recipient_account_id` text NOT NULL,
+  `credit_card_number`integer,
   `amount` real NOT NULL,
   `type` text NOT NULL,
   `created_date` datetime,

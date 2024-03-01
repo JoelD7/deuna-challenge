@@ -138,10 +138,10 @@ func (cli *SQLiteClient) ProcessCreditTransaction(ctx context.Context, clientCar
 		now := time.Now()
 
 		newTransaction := &models.Transaction{
-			AccountID:          *clientCard.AccountID,
+			CreditCardNumber:   clientCard.CardNumber,
 			RecipientAccountID: merchantAccount.ID,
 			Amount:             amount,
-			Type:               models.TransactionTypeTransfer,
+			Type:               models.TransactionTypeCredit,
 			CreatedDate:        &now,
 		}
 
