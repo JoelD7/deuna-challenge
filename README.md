@@ -6,6 +6,18 @@ Entities Involved:
 3. **Online Payment Platform**: An application that validates requests, stores card information, and manages payment requests and responses to and from the acquiring bank.
 4. **Acquiring Bank**: Facilitates the actual retrieval of funds from the customer's card and transfers them to the merchant. Additionally, it validates card information and sends payment details to the relevant processing organization.
 
+---
+* [Setup](#setup)
+  * [Prerequisites](#prerequisites)
+  * [Running the application](#running-the-application)
+* [Use of the API](#use-of-the-api)
+* [Structure](#structure)
+  * [Database diagram - Payment platform](#database-diagram---payment-platform)
+  * [Database diagram - Acquiring bank](#database-diagram---acquiring-bank)
+* [Design decisions and assumptions](#design-decisions-and-assumptions)
+* [Cloud technologies](#cloud-technologies)
+---
+
 ## Setup
 ### Prerequisites
 - Go
@@ -60,11 +72,15 @@ Entities Involved:
   ```json
   {
     "amount": 500,
-    "merchantAccountID": "5", // The account of the merchant to which the payment is made
-    "userID": "2@mail.com", // The email of the customer making the payment
+    "merchantAccountID": "5",  
+    "userID": "2@mail.com", 
     "cardNumber": 7048506547895036
   }
   ```
+    - `merchantAccountID`: The account of the merchant to which the payment is made
+    - `userID`: The email of the customer making the payment
+
+
 - `GET /payments/{paymentID}`: This endpoint is used to retrieve a payment. It requires the `paymentID` as a path parameter.
 - `POST /payments/process`: This endpoint is used to process a payment. The application will only process the first payment of the queue that matches the `merchantAccountID`. It requires a JSON body with the following structure:
   ```json
