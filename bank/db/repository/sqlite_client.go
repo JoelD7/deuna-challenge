@@ -196,7 +196,7 @@ func (cli *SQLiteClient) RefundDebitTransaction(ctx context.Context, transaction
 			return err
 		}
 
-		if err = cli.DeleteTransaction(ctx, transaction.ID); err != nil {
+		if err = cli.DeleteTransaction(ctx, transaction); err != nil {
 			return err
 		}
 
@@ -234,7 +234,7 @@ func (cli *SQLiteClient) RefundCreditTransaction(ctx context.Context, transactio
 			return err
 		}
 
-		if err = cli.DeleteTransaction(ctx, transaction.ID); err != nil {
+		if err = cli.DeleteTransaction(ctx, transaction); err != nil {
 			return err
 		}
 
@@ -269,6 +269,6 @@ func (cli *SQLiteClient) GetTransaction(ctx context.Context, transactionID strin
 	return &transaction, nil
 }
 
-func (cli *SQLiteClient) DeleteTransaction(ctx context.Context, transactionID string) error {
-	return cli.conn.Delete(&models.Transaction{}, transactionID).Error
+func (cli *SQLiteClient) DeleteTransaction(ctx context.Context, transaction *models.Transaction) error {
+	return cli.conn.Delete(transaction).Error
 }
