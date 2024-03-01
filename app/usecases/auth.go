@@ -4,7 +4,10 @@ import (
 	"context"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/base64"
+	"encoding/json"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"github.com/JoelD7/deuna-challenge/app/models"
 	"github.com/gbrlsnchs/jwt/v3"
@@ -49,7 +52,19 @@ khPJAoGAJeUe8/JBnSG6+pcKMCS/7BKrDwjnx32Av9JgKMR662M8VzYuQm5dn/r7
 zrArJVptyTX9EYwOkOA3e6aupi06iDJ7ym2y6+1eOokcHkySqfOSxvLEhCi3MnHL
 6J9fSRUtc/JyYMClgSaMOABaQvlv02bFpe0qnVCKUujUrDnv5xo=
 -----END RSA PRIVATE KEY-----`)
-	publicKey = os.Getenv("RSA_PUBLIC_KEY")
+	publicKey = []byte(`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAogelHdI7G4dlunQ0WvDd
+LU5ZjHoptN9i8BYfqe9VieDUxOUzjXzD7OvLc3ARgqel5nu8LB0jcYPSeR+yTbL9
+BN2kvBOGxPf1mlALdPRDLlTnKe6Yo+K7+Xv9tkEbMn7zl3//emPS4m3kRc47XHtJ
+SpuHgR4tEyxxZ/IA+XdcBcnbwmz96tBofE7iQWc3DCedf79+L3JPeJnzkH0Lg5dD
+U8e6/fRBwKSfAU//JGvjHKXaUoGxJPBU0PnjxsOuIoN7b6ZkK+llba6K8wrn/Lhq
+Kog1/S097v9tlPM7gr8m8XbfgNzHUXCBcLhep3534d+UEnn4ouslaZ9XGP6e5yyX
+7wIDAQAB
+-----END PUBLIC KEY-----`)
+
+	errInvalidTokenLength = errors.New("invalid token length")
+	invalidJWTErrs        = []error{jwt.ErrAudValidation, jwt.ErrExpValidation, jwt.ErrIatValidation, jwt.ErrIssValidation,
+		jwt.ErrJtiValidation, jwt.ErrNbfValidation, jwt.ErrSubValidation}
 )
 
 type UserManager interface {
@@ -169,4 +184,91 @@ func getPrivateKey() (*rsa.PrivateKey, error) {
 	}
 
 	return rsaPrivateKey, nil
+}
+
+func NewTokenValidator() func(ctx context.Context, token string) (string, error) {
+	return func(ctx context.Context, token string) (string, error) {
+		payload, err := getTokenPayload(token)
+		if err != nil {
+			return "", err
+		}
+
+		publicK, err := getPublicKey()
+		if err != nil {
+			return "", err
+		}
+
+		decryptingHash := jwt.NewRS256(jwt.RSAPublicKey(publicK))
+
+		err = validateJWTPayload(token, payload, decryptingHash)
+		if err != nil {
+			return "", err
+		}
+
+		return payload.Subject, nil
+	}
+}
+
+func getPublicKey() (*rsa.PublicKey, error) {
+	publicPemBlock, _ := pem.Decode(publicKey)
+	if publicPemBlock == nil || !strings.Contains(publicPemBlock.Type, "PUBLIC KEY") {
+		return nil, fmt.Errorf("failed to decode PEM public block containing public key")
+	}
+
+	key, err := x509.ParsePKIXPublicKey(publicPemBlock.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return key.(*rsa.PublicKey), nil
+}
+
+func validateJWTPayload(token string, payload *jwt.Payload, decryptingHash *jwt.RSASHA) error {
+	now := time.Now()
+
+	expValidator := jwt.ExpirationTimeValidator(now)
+
+	validatePayload := jwt.ValidatePayload(payload, expValidator)
+
+	_, err := jwt.Verify([]byte(token), decryptingHash, payload, validatePayload)
+	if isErrorInvalidJWT(err) {
+		return fmt.Errorf("%v: %w", err, models.ErrInvalidToken)
+	}
+
+	if err != nil {
+		return fmt.Errorf("%v: %w", err, models.ErrUnauthorized)
+	}
+
+	return nil
+}
+
+func isErrorInvalidJWT(err error) bool {
+	for _, e := range invalidJWTErrs {
+		if errors.Is(err, e) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func getTokenPayload(token string) (*jwt.Payload, error) {
+	var payload *jwt.Payload
+
+	tokenParts := strings.Split(token, ".")
+	if len(tokenParts) < 3 {
+		return nil, errInvalidTokenLength
+	}
+
+	payloadPart, err := base64.RawURLEncoding.DecodeString(tokenParts[1])
+	if err != nil {
+		return nil, fmt.Errorf("payload decoding failed: %w", err)
+	}
+
+	err = json.Unmarshal(payloadPart, &payload)
+	if err != nil {
+		return nil, fmt.Errorf("paylaod unmarshalling failed: %w", err)
+	}
+
+	return payload, nil
 }
