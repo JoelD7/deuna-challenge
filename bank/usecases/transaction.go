@@ -2,14 +2,13 @@ package usecases
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
 	"github.com/JoelD7/deuna-challenge/bank/models"
 )
 
 type TransactionManager interface {
 	CreateTransaction(ctx context.Context, transaction models.Transaction) (string, error)
-	ProcessTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error)
+	ProcessDebitTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error)
+	ProcessCreditTransaction(ctx context.Context, clientCard *models.Card, merchantAccountID string, amount float64) (string, error)
 	GetTransaction(ctx context.Context, transactionID string) (*models.Transaction, error)
 	GetAccount(ctx context.Context, accountID string) (*models.Account, error)
 	UpdateAccount(ctx context.Context, account models.Account) error
@@ -26,14 +25,11 @@ func NewTransactionProcessor(tm TransactionManager, cm CardManager) func(ctx con
 			return "", err
 		}
 
-		data, err := json.Marshal(card)
-
 		if *card.Type == models.CardTypeDebit {
-			fmt.Println("Card data: ", string(data))
-			return tm.ProcessTransaction(ctx, card.Account, merchantAccountID, amount)
+			return tm.ProcessDebitTransaction(ctx, card.Account, merchantAccountID, amount)
 		}
 
-		return "id", nil
+		return tm.ProcessCreditTransaction(ctx, card, merchantAccountID, amount)
 	}
 }
 

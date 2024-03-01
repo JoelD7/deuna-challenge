@@ -56,6 +56,10 @@ func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models
 	return &card, nil
 }
 
+func (cli *SQLiteClient) UpdateCard(ctx context.Context, card models.Card) error {
+	return cli.conn.Save(&card).Error
+}
+
 func (cli *SQLiteClient) UpdateAccount(ctx context.Context, account models.Account) error {
 	return cli.conn.Save(&account).Error
 }
@@ -76,7 +80,7 @@ func (cli *SQLiteClient) GetAccount(ctx context.Context, accountID string) (*mod
 	return &account, nil
 }
 
-func (cli *SQLiteClient) ProcessTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error) {
+func (cli *SQLiteClient) ProcessDebitTransaction(ctx context.Context, clientAccount models.Account, merchantAccountID string, amount float64) (string, error) {
 	transactionID := ""
 
 	err := cli.conn.Transaction(func(tx *gorm.DB) error {
@@ -104,6 +108,50 @@ func (cli *SQLiteClient) ProcessTransaction(ctx context.Context, clientAccount m
 
 		clientAccount.Balance -= amount
 		if err = cli.UpdateAccount(ctx, clientAccount); err != nil {
+			return err
+		}
+
+		merchantAccount.Balance += amount
+		if err = cli.UpdateAccount(ctx, *merchantAccount); err != nil {
+			return err
+		}
+
+		transactionID = id
+
+		return nil
+	})
+
+	return transactionID, err
+}
+
+func (cli *SQLiteClient) ProcessCreditTransaction(ctx context.Context, clientCard *models.Card, merchantAccountID string, amount float64) (string, error) {
+	transactionID := ""
+
+	err := cli.conn.Transaction(func(tx *gorm.DB) error {
+		cli.SetConnection(tx)
+
+		merchantAccount, err := cli.GetAccount(ctx, merchantAccountID)
+		if err != nil {
+			return err
+		}
+
+		now := time.Now()
+
+		newTransaction := &models.Transaction{
+			AccountID:          *clientCard.AccountID,
+			RecipientAccountID: merchantAccount.ID,
+			Amount:             amount,
+			Type:               models.TransactionTypeTransfer,
+			CreatedDate:        &now,
+		}
+
+		id, err := cli.CreateTransaction(ctx, *newTransaction)
+		if err != nil {
+			return err
+		}
+
+		clientCard.Balance -= amount
+		if err = cli.UpdateCard(ctx, *clientCard); err != nil {
 			return err
 		}
 
