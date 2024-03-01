@@ -15,7 +15,7 @@ var (
 	ErrPaymentNotFound              = errors.New("payment not found")
 	ErrInvalidAmount                = errors.New("invalid amount")
 	ErrMissingAmount                = errors.New("missing amount")
-	ErrMissingCustomerID            = errors.New("missing customer ID")
+	ErrMissingUserID                = errors.New("missing user ID")
 	ErrMissingMerchantAccountID     = errors.New("missing merchant account ID")
 	ErrEqualCustomerIDAndMerchantID = errors.New("customer ID and merchant ID cannot be equal")
 	ErrMissingCardNumber            = errors.New("missing card number")
@@ -30,12 +30,23 @@ var (
 	ErrCardNotFound                 = errors.New("card not found")
 	ErrInvalidCard                  = errors.New("invalid card")
 	ErrMissingTransactionID         = errors.New("missing transaction ID")
+	ErrMissingEmail                 = errors.New("missing email")
+	ErrMissingPassword              = errors.New("missing password")
+	ErrMissingUserRole              = errors.New("missing user role")
+	ErrMissingFirstName             = errors.New("missing first name")
+	ErrMissingLastName              = errors.New("missing last name")
+	ErrMissingPhoneNumber           = errors.New("missing phone number")
+	ErrMissingAddress               = errors.New("missing address")
+	ErrWrongCredentials             = errors.New("wrong credentials")
+	ErrUserNotFound                 = errors.New("user not found")
+	ErrInvalidToken                 = errors.New("invalid token")
+	ErrUnauthorized                 = errors.New("unauthorized")
 
 	statusByError = map[error]ErrResponse{
 		ErrPaymentNotFound:              {ErrPaymentNotFound.Error(), http.StatusNotFound},
 		ErrInvalidAmount:                {ErrInvalidAmount.Error(), http.StatusBadRequest},
 		ErrMissingAmount:                {ErrMissingAmount.Error(), http.StatusBadRequest},
-		ErrMissingCustomerID:            {ErrMissingCustomerID.Error(), http.StatusBadRequest},
+		ErrMissingUserID:                {ErrMissingUserID.Error(), http.StatusBadRequest},
 		ErrMissingMerchantAccountID:     {ErrMissingMerchantAccountID.Error(), http.StatusBadRequest},
 		ErrEqualCustomerIDAndMerchantID: {ErrEqualCustomerIDAndMerchantID.Error(), http.StatusBadRequest},
 		ErrMissingCardNumber:            {ErrMissingCardNumber.Error(), http.StatusBadRequest},
@@ -50,6 +61,17 @@ var (
 		ErrCardNotFound:                 {ErrCardNotFound.Error(), http.StatusNotFound},
 		ErrInvalidCard:                  {ErrInvalidCard.Error(), http.StatusBadRequest},
 		ErrMissingTransactionID:         {ErrMissingTransactionID.Error(), http.StatusBadRequest},
+		ErrMissingEmail:                 {ErrMissingEmail.Error(), http.StatusBadRequest},
+		ErrMissingPassword:              {ErrMissingPassword.Error(), http.StatusBadRequest},
+		ErrMissingUserRole:              {ErrMissingUserRole.Error(), http.StatusBadRequest},
+		ErrMissingFirstName:             {ErrMissingFirstName.Error(), http.StatusBadRequest},
+		ErrMissingLastName:              {ErrMissingLastName.Error(), http.StatusBadRequest},
+		ErrMissingPhoneNumber:           {ErrMissingPhoneNumber.Error(), http.StatusBadRequest},
+		ErrMissingAddress:               {ErrMissingAddress.Error(), http.StatusBadRequest},
+		ErrWrongCredentials:             {ErrWrongCredentials.Error(), http.StatusUnauthorized},
+		ErrUserNotFound:                 {ErrUserNotFound.Error(), http.StatusNotFound},
+		ErrInvalidToken:                 {ErrInvalidToken.Error(), http.StatusForbidden},
+		ErrUnauthorized:                 {ErrUnauthorized.Error(), http.StatusUnauthorized},
 	}
 )
 

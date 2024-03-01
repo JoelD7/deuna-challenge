@@ -7,7 +7,7 @@ import (
 
 type CardManager interface {
 	GetCard(ctx context.Context, cardNumber int64) (*models.Card, error)
-	GetCardForCustomer(ctx context.Context, cardNumber int64, customerID string) (*models.Card, error)
+	GetCardForUser(ctx context.Context, cardNumber int64, customerID string) (*models.Card, error)
 	CreateCard(ctx context.Context, card models.Card) (int64, error)
 }
 
@@ -19,7 +19,7 @@ func NewCardGetter(cm CardManager) func(ctx context.Context, cardNumber int64) (
 
 func NewCardGetterForCustomer(cm CardManager) func(ctx context.Context, cardNo int64, customerID string) (*models.Card, error) {
 	return func(ctx context.Context, cardNo int64, customerID string) (*models.Card, error) {
-		return cm.GetCardForCustomer(ctx, cardNo, customerID)
+		return cm.GetCardForUser(ctx, cardNo, customerID)
 	}
 }
 

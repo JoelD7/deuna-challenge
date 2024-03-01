@@ -81,10 +81,10 @@ func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models
 	return &card, nil
 }
 
-func (cli *SQLiteClient) GetCardForCustomer(ctx context.Context, cardNumber int64, customerID string) (*models.Card, error) {
+func (cli *SQLiteClient) GetCardForUser(ctx context.Context, cardNumber int64, userID string) (*models.Card, error) {
 	var card models.Card
 
-	err := db.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ? AND customer_id = ?", cardNumber, customerID).Error
+	err := db.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ? AND user_id = ?", cardNumber, userID).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, models.ErrCardNotFound
@@ -109,4 +109,26 @@ func (cli *SQLiteClient) CreateCard(ctx context.Context, card models.Card) (int6
 	}
 
 	return card.CardNumber, nil
+}
+
+func (cli *SQLiteClient) CreateUser(ctx context.Context, user models.User) error {
+	result := db.Create(&user)
+
+	return result.Error
+}
+
+func (cli *SQLiteClient) GetUser(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+
+	err := db.Model(&models.User{}).Preload(clause.Associations).First(&user, "email = ?", email).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrUserNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

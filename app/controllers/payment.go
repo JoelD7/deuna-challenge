@@ -11,8 +11,12 @@ import (
 )
 
 var (
-	sqliteClient = repository.NewSQLiteClient()
+	sqliteClient *repository.SQLiteClient
 )
+
+func init() {
+	sqliteClient = repository.NewSQLiteClient()
+}
 
 type processPaymentRequest struct {
 	MerchantAccountID string `json:"merchantAccountID"`
@@ -81,8 +85,8 @@ func validateCreatePaymentRequest(r *http.Request) (*models.Payment, error) {
 		return nil, models.ErrInvalidAmount
 	}
 
-	if payment.CustomerID == nil {
-		return nil, models.ErrMissingCustomerID
+	if payment.UserID == nil {
+		return nil, models.ErrMissingUserID
 	}
 
 	if payment.MerchantAccountID == nil {
@@ -95,7 +99,7 @@ func validateCreatePaymentRequest(r *http.Request) (*models.Payment, error) {
 
 	getCardForCustomer := usecases.NewCardGetterForCustomer(sqliteClient)
 
-	_, err = getCardForCustomer(r.Context(), *payment.CardNumber, *payment.CustomerID)
+	_, err = getCardForCustomer(r.Context(), *payment.CardNumber, *payment.UserID)
 	if err != nil {
 		return nil, err
 	}
