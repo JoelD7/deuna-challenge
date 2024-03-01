@@ -17,6 +17,9 @@ func main() {
 	r := mux.NewRouter()
 	r.Use(headerMiddleware)
 
+	r.HandleFunc("/signup", controllers.SignupHandler).
+		Methods(http.MethodPost)
+
 	r.HandleFunc("/payments", controllers.CreatePaymentHandler).
 		Methods(http.MethodPost)
 	r.HandleFunc("/payments/{paymentID}", controllers.GetPaymentHandler).

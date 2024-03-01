@@ -16,7 +16,7 @@ var (
 type Payment struct {
 	ID                string        `json:"id" gorm:"id;primaryKey"`
 	MerchantAccountID *string       `json:"merchantAccountID" gorm:"merchant_account_id"`
-	CustomerID        *string       `json:"customerID" gorm:"customer_id"`
+	UserID            *string       `json:"userID" gorm:"user_id"`
 	CardNumber        *int64        `json:"cardNumber" gorm:"card_number"`
 	TransactionID     string        `json:"transactionID" gorm:"transaction_id"`
 	Amount            *float64      `json:"amount" gorm:"amount"`
@@ -24,7 +24,7 @@ type Payment struct {
 	FailureReason     string        `json:"failureReason" gorm:"failure_reason"`
 	CreatedDate       *time.Time    `json:"createdDate" gorm:"created_date"`
 	UpdatedDate       *time.Time    `json:"updatedDate" gorm:"updated_date"`
-	Customer          Customer      `json:"-" gorm:"foreignKey:CustomerID"`
+	Customer          Customer      `json:"-" gorm:"foreignKey:UserID"`
 	Card              Card          `json:"-" gorm:"foreignKey:CardNumber"`
 }
 

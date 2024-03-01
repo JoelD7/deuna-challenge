@@ -9,7 +9,7 @@ var (
 
 type Card struct {
 	CardNumber int64     `json:"cardNumber" gorm:"card_number;primaryKey"`
-	CustomerID *string   `json:"customerID" gorm:"customer_id"`
+	UserID     *string   `json:"userID" gorm:"user_id"`
 	Expiration *string   `json:"expiration" gorm:"expiration"`
 	Type       *CardType `json:"type" gorm:"type"`
 	Vendor     *string   `json:"vendor" gorm:"vendor"`
