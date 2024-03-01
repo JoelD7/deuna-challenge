@@ -81,6 +81,22 @@ func (cli *SQLiteClient) GetCard(ctx context.Context, cardNumber int64) (*models
 	return &card, nil
 }
 
+func (cli *SQLiteClient) GetCardForCustomer(ctx context.Context, cardNumber int64, customerID string) (*models.Card, error) {
+	var card models.Card
+
+	err := db.Model(&models.Card{}).Preload(clause.Associations).First(&card, "card_number = ? AND customer_id = ?", cardNumber, customerID).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, models.ErrCardNotFound
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &card, nil
+}
+
 func (cli *SQLiteClient) CreateCard(ctx context.Context, card models.Card) (int64, error) {
 	result := db.Create(&card)
 

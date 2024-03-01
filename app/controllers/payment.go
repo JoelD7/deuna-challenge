@@ -93,6 +93,13 @@ func validateCreatePaymentRequest(r *http.Request) (*models.Payment, error) {
 		return nil, models.ErrMissingCardNumber
 	}
 
+	getCardForCustomer := usecases.NewCardGetterForCustomer(sqliteClient)
+
+	_, err = getCardForCustomer(r.Context(), *payment.CardNumber, *payment.CustomerID)
+	if err != nil {
+		return nil, err
+	}
+
 	return &payment, nil
 }
 
